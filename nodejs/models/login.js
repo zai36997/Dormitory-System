@@ -53,6 +53,10 @@ userSchema.methods.encryptPassword = async function(password){
     return hash
 }
 
+userSchema.methods.validPassword = async function(pwdHash){
+  const isLogin = await bcrypt.compare(pwdHash,this.pwdHash)
+  return isLogin
+}
 module.exports = User = mongoose.model(
   "User",
   userSchema,

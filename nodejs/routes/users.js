@@ -16,6 +16,8 @@ body('email').not().isEmpty().withMessage('Please input email').isEmail().withMe
 body('pwdHash').not().isEmpty().withMessage('Please input password').isLength({min: 3}).withMessage('Password is more then 6 charecter'),
 
  userController.register)
+
+ router.post('/login',userController.login)
  
 //  router.post('/login',userController.login)
 //  router.get('/me',passportJWT.isLogin,userController.me)

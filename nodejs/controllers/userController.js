@@ -1,7 +1,7 @@
 const User = require('../models/login'),
- {validationResult} = require('express-validator')
-// jwt = require('jsonwebtoken'),
-// config = require('../config/index')
+ {validationResult} = require('express-validator'),
+jwt = require('jsonwebtoken'),
+config = require('../config/index')
 
 const Status = {
     USER : 'user',
@@ -48,6 +48,47 @@ try {
 }
 }
 
+exports.login = async (req,res,next) =>{
+    try {
+        const {email,pwdHash} = req.body
+        const user = await User.findOne({
+            email: email
+        })
+
+         //เช็ก user ว่าซ้ำมั้ย
+    if (!user) {
+        const error = new Error('Email not found')
+        error.statusCode = 401
+        throw error
+    }
+    //เช็ก email และ password
+    const validPassword = await user.validPassword(pwdHash)
+    if(!validPassword){
+        const error = new Error('Password or Email incorrect')
+            error.statusCode = 401
+            throw error
+    }
+
+        //  สร้าง token
+        const token = jwt.sign({
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            status: user.status,  
+        },config.JWT_SECRET,{expiresIn : '5 days'})
+
+        const expires_in = jwt.decode(token)
+        return res.json({
+            access_token: token,
+            expires_in: expires_in
+        })
+
+
+
+    } catch (error) {
+        next(error)
+    }
+}
 // function register(firstname,lastname,age,birthday,email,tel,pwdHash){
 
 
