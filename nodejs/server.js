@@ -7,17 +7,10 @@ const express = require("express"),
   config = require('./config/index')
 
   port = process.env.PORT
-  // router = express.Router();
-  
-  
-  
+
   app.use(bodyParser.json());
   app.use(cors());
   app.use(bodyParser.urlencoded({ extended: false }));
-
-
-
-// replace the uri string with your connection string.
 
 mongoose.connect(config.MONGODB_URI, {useNewUrlParser: true , useCreateIndex: true,useUnifiedTopology: true}).then(
     // เมื่อการเชื่อมต่อสำเร็จ
