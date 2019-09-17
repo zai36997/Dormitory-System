@@ -4,13 +4,18 @@ const express = require("express"),
   cors = require("cors"),
   app = express(),
   mongoose = require("mongoose"),
-  config = require('./config/index')
+  config = require('./config/index'),
+  usersRouter = require('./routes/users'),
+  errorHander = require('./middlewares/errorHandler')
+//const passportJWT = require('./middlewares/passoprtJWT')
+  // validator = require('express-validator')
 
   port = process.env.PORT
 
   app.use(bodyParser.json());
   app.use(cors());
   app.use(bodyParser.urlencoded({ extended: false }));
+  // app.use(validator());
 
 mongoose.connect(config.MONGODB_URI, {useNewUrlParser: true , useCreateIndex: true,useUnifiedTopology: true}).then(
     // เมื่อการเชื่อมต่อสำเร็จ
@@ -25,3 +30,6 @@ mongoose.connect(config.MONGODB_URI, {useNewUrlParser: true , useCreateIndex: tr
   app.listen(port, function() {
     console.log("Listening on port " + port);
   });
+
+  app.use('/users', usersRouter);
+  app.use(errorHander)
